@@ -1,7 +1,7 @@
-name: Build & deploy release
+name: Build Artifact
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
@@ -11,22 +11,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: 17
           cache: 'gradle'
-
-      - name: Set version to release
-        run: ./gradlew --no-daemon unSnapshotVersion
-
-      - name: Commit release version
-        run: ./gradlew --no-daemon commitVersion
-
+      - name: Build
+        run: ./gradlew build --no-daemon
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: build
-          path: builds
+          path: artifacts
